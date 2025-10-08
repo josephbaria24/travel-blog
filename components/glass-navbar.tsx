@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from 'react'
-import { Menu, X, User, LogOut } from 'lucide-react'
+import { Menu, X, User, LogOut, MapPin, BookOpen, Compass, MessageCircle, Mail } from "lucide-react"
+
 import { useAdmin } from '@/contexts/admin-context'
 import {
   Dialog,
@@ -57,43 +58,41 @@ export function GlassNavbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Slowandarain
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              Slowanderain
               </span>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#destinations" className="hover:text-primary transition-colors">
-                Destinations
-              </a>
-              <a href="#stories" className="hover:text-primary transition-colors">
-                Stories
-              </a>
-              <a href="#guides" className="hover:text-primary transition-colors">
-                Guides
-              </a>
-              {isAdmin ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowLoginDialog(true)}
-                  className="flex items-center gap-2"
-                >
-                  <User className="w-4 h-4" />
-                  Admin
-                </Button>
-              )}
-            </div>
+  <a href="#destinations" className="hover:text-primary flex items-center gap-1 transition-colors">
+    <MapPin className="w-4 h-4" />
+    Destinations
+  </a>
+  <a href="#stories" className="hover:text-primary flex items-center gap-1 transition-colors">
+    <BookOpen className="w-4 h-4" />
+    Stories
+  </a>
+  <a href="#guides" className="hover:text-primary flex items-center gap-1 transition-colors">
+    <Compass className="w-4 h-4" />
+    Guides
+  </a>
+  <a href="#feedback" className="hover:text-primary flex items-center gap-1 transition-colors">
+    <MessageCircle className="w-4 h-4" />
+    Feedbacks
+  </a>
+  {isAdmin ? (
+    <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-2">
+      <LogOut className="w-4 h-4" />
+      Logout
+    </Button>
+  ) : (
+    <Button variant="outline" size="sm" onClick={() => setShowLoginDialog(true)} className="flex items-center gap-2">
+      <User className="w-4 h-4" />
+      Admin
+    </Button>
+  )}
+</div>
+
 
             <div className="md:hidden flex items-center gap-2">
               {isAdmin ? (
@@ -126,36 +125,21 @@ export function GlassNavbar() {
         {isOpen && (
           <div className="md:hidden border-t border-border/40 backdrop-blur-md bg-background/95">
             <div className="px-4 py-4 space-y-3">
-              <a
-                href="#destinations"
-                className="block py-2 hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Destinations
+              <a href="#destinations" className="flex items-center gap-2 py-2 hover:text-primary" onClick={() => setIsOpen(false)}>
+                <MapPin className="w-4 h-4" /> Destinations
               </a>
-              <a
-                href="#stories"
-                className="block py-2 hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Stories
+              <a href="#stories" className="flex items-center gap-2 py-2 hover:text-primary" onClick={() => setIsOpen(false)}>
+                <BookOpen className="w-4 h-4" /> Stories
               </a>
-              <a
-                href="#guides"
-                className="block py-2 hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Guides
+              <a href="#guides" className="flex items-center gap-2 py-2 hover:text-primary" onClick={() => setIsOpen(false)}>
+                <Compass className="w-4 h-4" /> Guides
               </a>
-              <a
-                href="#newsletter"
-                className="block py-2 hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Newsletter
+              <a href="#feedback" className="flex items-center gap-2 py-2 hover:text-primary" onClick={() => setIsOpen(false)}>
+                <MessageCircle className="w-4 h-4" /> Feedbacks
               </a>
             </div>
           </div>
+
         )}
       </nav>
 
