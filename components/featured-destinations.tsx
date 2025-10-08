@@ -40,7 +40,10 @@ export function FeaturedDestinations() {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [currentSlide, setCurrentSlide] = useState(0)
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null)
-
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
+  const isDragging = useRef(false)
 
   // Duplicate destinations for infinite scroll effect
   const duplicatedDestinations = [...destinations, ...destinations, ...destinations]
@@ -93,6 +96,76 @@ export function FeaturedDestinations() {
       }
     }
   }, [destinations.length])
+
+  // Touch/Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    isDragging.current = true
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current) return
+    touchEndX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return
+    isDragging.current = false
+    
+    const swipeThreshold = 50
+    const diff = touchStartX.current - touchEndX.current
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - go to next
+        handleNext()
+      } else {
+        // Swipe right - go to previous
+        handlePrev()
+      }
+    }
+
+    touchStartX.current = 0
+    touchEndX.current = 0
+  }
+
+  // Mouse drag handlers for desktop
+  const handleMouseDown = (e: React.MouseEvent) => {
+    touchStartX.current = e.clientX
+    isDragging.current = true
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current) return
+    touchEndX.current = e.clientX
+  }
+
+  const handleMouseUp = () => {
+    if (!isDragging.current) return
+    isDragging.current = false
+    
+    const swipeThreshold = 50
+    const diff = touchStartX.current - touchEndX.current
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        handleNext()
+      } else {
+        handlePrev()
+      }
+    }
+
+    touchStartX.current = 0
+    touchEndX.current = 0
+  }
+
+  const handleMouseLeave = () => {
+    if (isDragging.current) {
+      handleMouseUp()
+    }
+  }
 
   const handleNext = () => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current)
@@ -314,6 +387,22 @@ export function FeaturedDestinations() {
     }
   }
 
+  const getVisibleCards = () => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth >= 1024) return 3 // lg
+      if (window.innerWidth >= 768) return 2  // md
+    }
+    return 1 // sm
+  }
+
+  const [visibleCards, setVisibleCards] = useState(getVisibleCards())
+
+  useEffect(() => {
+    const handleResize = () => setVisibleCards(getVisibleCards())
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
   return (
     <>
       <section id="destinations" className="py-20 px-4 sm:px-6 lg:px-8">
@@ -330,15 +419,25 @@ export function FeaturedDestinations() {
           <div className="relative">
             {destinations.length > 0 ? (
               <>
-                <div className="overflow-hidden">
+                <div 
+                  ref={carouselRef}
+                  className="overflow-hidden cursor-grab active:cursor-grabbing select-none"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <div 
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{
-                      transform: `translateX(-${(currentSlide + destinations.length) * (100 / 3)}%)`,
+                      transform: `translateX(-${currentSlide * (100 / visibleCards)}%)`,
                     }}
                   >
                     {duplicatedDestinations.map((destination, index) => (
-                      <div key={`${destination.id}-${index}`} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">
+                      <div key={`${destination.id}-${index}`} className="w-full sm:w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">
                         <Card className="group overflow-hidden border-2 hover:border-primary transition-all duration-300 hover:shadow-xl">
                           {isAdmin && (
                             <div className="flex justify-end gap-2 p-4">
@@ -365,7 +464,7 @@ export function FeaturedDestinations() {
                             <img
                               src={destination.image || "/placeholder.svg"}
                               alt={destination.title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 pointer-events-none"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
                             <div className="absolute bottom-4 left-4 right-4">
@@ -396,7 +495,7 @@ export function FeaturedDestinations() {
                     variant="outline"
                     size="icon"
                     onClick={handlePrev}
-                    className="pointer-events-auto bg-background/80 backdrop-blur-sm"
+                    className="pointer-events-auto bg-background/40 backdrop-blur-sm cursor-pointer hover:bg-black/20"
                   >
                     <ChevronLeft className="h-6 w-6" />
                   </Button>
@@ -404,7 +503,7 @@ export function FeaturedDestinations() {
                     variant="outline"
                     size="icon"
                     onClick={handleNext}
-                    className="pointer-events-auto bg-background/80 backdrop-blur-sm"
+                    className="pointer-events-auto bg-background/40 backdrop-blur-sm cursor-pointer hover:bg-black/20"
                   >
                     <ChevronRight className="h-6 w-6" />
                   </Button>
