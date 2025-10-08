@@ -13,7 +13,7 @@ const poppins = Geist({
 })
 
 export const metadata: Metadata = {
-  title: "Slowandarain",
+  title: "Slowanderain",
   description: "Explore the world through our eyes",
   generator: "v0.app",
 }
