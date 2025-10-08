@@ -26,7 +26,7 @@ export function Footer() {
                 <Compass className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Travel blog
+              Slowandarain
               </span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
@@ -64,7 +64,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">© 2025 Travel blog. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">© 2025 Slowandarain. All rights reserved.</p>
         </div>
       </div>
     </footer>

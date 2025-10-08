@@ -40,13 +40,17 @@ export function HeroSection() {
             Start Exploring
             <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Button>
+          <a href="#stories" className="hover:text-primary transition-colors">
           <Button
             size="lg"
             variant="outline"
-            className="border-2 border-foreground/20 hover:border-primary hover:text-primary bg-transparent"
+            className="border-2 border-foreground/20 hover:border-primary hover:text-white bg-transparent cursor-pointer hover:bg-primary"
           >
-            View Stories
+            
+                View Stories
+              
           </Button>
+          </a>
         </div>
       </div>
 
